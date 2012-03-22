@@ -18,3 +18,7 @@ tr {
 .badguy {
     background-color:red;
 }
+
+th {
+    border: 1px solid black;
+}

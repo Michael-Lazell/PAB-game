@@ -6,7 +6,11 @@ var config = {
     playerStart: {
         x: 5,
         y: 19
-    }
+    },
+    walls: [
+        {x: 2, y: 17, width: 2},
+        {x: 2, y: 15, width: 3}
+    ]
 };
 
 
@@ -61,10 +65,17 @@ function Board() {
     this.actors = [];
     this.drawBoard = function () {
         $('#game').html(this.drawTable());
+        console.log(config.walls);
+        for(var i in config.walls) {
+            console.log(config.walls[i].width);
+            for(var j = 0; j <= config.walls[i].width; j++){
+                $('#cell_' + config.walls[i].y + '_' + (config.walls[i].x + j) ).html('[]');
+            }
+        }
     };
     
     this.drawTable = function () {
-        var string = '<table id="board">';
+        var string = '<table id="board"><tr><th colspan="' + config.boardSize.x + '">GOAL</th></tr>';
         var y, x;
         for(y = 0; y < config.boardSize.y; y++) {
             string += '<tr id="row_' + y + '">';
@@ -140,6 +151,7 @@ function Player(board) {
     
 }
 
+
 function Badguy(board, x, y, dir, speed) {
     var _this = this;
     this.pos = new Position(x,y);
@@ -184,6 +196,7 @@ function Badguy(board, x, y, dir, speed) {
 
 
 $(function() {
+    alert('You are now an Enonic consultant. \nYour mission is to get a feature request past the Product Advisory Board. \nGood luck!');
     init();
 });
 
@@ -191,9 +204,10 @@ function init() {
     
     var board = new Board();
     var me = new Player(board);
-    var tsi = new Badguy(board, 0, 1, 'right', 500);
-    var mer = new Badguy(board, 0, 3, 'left', 50);
-    var tlo = new Badguy(board, 5, 5, 'left', 100);
+    var tsi = new Badguy(board, 0, 1, 'right', 50);
+    var mer = new Badguy(board, 0, 3, 'left', 200);
+    var tlo = new Badguy(board, 5, 5, 'right', 500);
+    
     bindKeypress(me);
     
     board.actors[0] = me;
