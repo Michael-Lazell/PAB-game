@@ -2,15 +2,17 @@ var config = {
     boardSize: {
         x: 10,
         y: 20
-    }
+    },
+    walls: [
+        {x: 2, y: 17, width: 2},
+        {x: 2, y: 15, width: 3}
+    ]
 };
 
-// Test comment
 
 var approved = 0;
 var rejected = 0;
 
-//CHENGE
 
 function Position(x, y) {
     this.x = x;
@@ -60,10 +62,20 @@ function Board() {
     this.actors = [];
     this.drawBoard = function () {
         $('#game').html(this.drawTable());
+        console.log(config.walls);
+        for(var i in config.walls) {
+            console.log(config.walls[i].width);
+            for(var j = 0; j <= config.walls[i].width; j++){
+                $('#cell_' + config.walls[i].y + '_' + (config.walls[i].x + j) ).html('[]');
+                //console.log('#cell_' + i.y + '_' + (i.x + j) );
+            }
+            
+        }
+        
     };
     
     this.drawTable = function () {
-        var string = '<table id="board">';
+        var string = '<table id="board"><tr><th colspan="' + config.boardSize.x + '">GOAL</th></tr>';
         var y, x;
         for(y = 0; y < config.boardSize.y; y++) {
             string += '<tr id="row_' + y + '">';
@@ -125,6 +137,14 @@ function Player(board) {
     
 }
 
+/*function Wall(board, x, y, width) {
+    this.pos = new Pos(x,y);
+    this.width = width;
+    
+    
+}*/
+
+
 function Badguy(board, x, y, dir, speed) {
     var _this = this;
     this.pos = new Position(x,y);
@@ -176,6 +196,7 @@ function Badguy(board, x, y, dir, speed) {
 //var actors = [];
 
 $(function() {
+    alert('You are now an Enonic consultant. \nYour mission is to get a feature request past the Product Advisory Board. \nGood luck!');
     init();
 });
 
@@ -183,9 +204,13 @@ function init() {
     
     var board = new Board();
     var me = new Player(board);
-    var tsi = new Badguy(board, 0, 1, 'right', 500);
-    var mer = new Badguy(board, 0, 3, 'left', 50);
-    var tlo = new Badguy(board, 5, 5, 'left', 100);
+    var tsi = new Badguy(board, 0, 1, 'right', 50);
+    var mer = new Badguy(board, 0, 3, 'left', 200);
+    var tlo = new Badguy(board, 5, 5, 'right', 500);
+    
+    /*var walls = [];
+    walls.push(new Wall(board, 2, 15, 3));*/
+    
     bindKeypress(me);
     
     board.actors[0] = me;
