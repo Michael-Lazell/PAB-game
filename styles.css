@@ -10,3 +10,11 @@ table {
 tr {
     
 }
+
+.player {
+    background-color:blue;
+}
+
+.badguy {
+    background-color:red;
+}

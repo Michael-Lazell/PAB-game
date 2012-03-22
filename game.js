@@ -2,6 +2,10 @@ var config = {
     boardSize: {
         x: 10,
         y: 20
+    },
+    playerStart: {
+        x: 5,
+        y: 19
     }
 };
 
@@ -79,34 +83,35 @@ function Board() {
                 if(this.actors[i].pos.equals(this.actors[0].pos)) {
                     alert('REJECTED!');
                     $('#rejected').html(++rejected);
-                    restart(this.actors);
+                    restart(this);
                 }
             }
         }
         if(this.actors[0].pos.y === 0){
             alert('Congratulations! Your feature will be added in "5.X"');
             $('#approved').html(++approved);
-            restart(this.actors);
+            restart(this);
         }
     };
     
     this.renderActor = function(actor) {
         var mark;
         if (actor instanceof Player) {
-            mark = 'X';
+            mark = 'player';
         } else if (actor instanceof Badguy) {
-            mark = 'O';
+            mark = 'badguy';
         }
+        
         if (actor.previousPos != undefined) {
-            $('#cell_' + actor.previousPos.y + '_' + actor.previousPos.x).html('');
+            $('#cell_' + actor.previousPos.y + '_' + actor.previousPos.x).removeClass(mark);
         }
-        $('#cell_' + actor.pos.y + '_' + actor.pos.x).html(mark);
+        $('#cell_' + actor.pos.y + '_' + actor.pos.x).addClass(mark);
     }
 }
 
 
 function Player(board) {
-    this.pos = new Position(5, 19);
+    this.pos = new Position(config.playerStart.x, config.playerStart.y);
     this.previousPos;
     this.type = 'goodguy';
     this.start = function () {
@@ -202,11 +207,11 @@ function init() {
     me.start();    
 }
 
-function restart(actors) {
-    
-    $('#cell_' + actors[0].pos.y + '_' + actors[0].pos.x).html('');
-    actors[0].pos.setPosition(5,19);
-    actors[0].start();
+function restart(board) {
+    var player = board.actors[0];
+    player.previousPos = new Position(player.pos.x, player.pos.y)
+    player.pos.setPosition(config.playerStart.x, config.playerStart.y);
+    board.renderActor(board.actors[0]);
 }
 
 
