@@ -13,7 +13,6 @@ var config = {
 var approved = 0;
 var rejected = 0;
 
-
 function Position(x, y) {
     this.x = x;
     this.y = y;
@@ -82,7 +81,6 @@ function Board() {
             string += '</tr>';
         }
         string += '</table>';
-        //this.checkCollision();
         return string;
     };
     
@@ -102,19 +100,33 @@ function Board() {
             restart(this.actors);
         }
     };
+    
+    this.renderActor = function(actor) {
+        var mark;
+        if (actor instanceof Player) {
+            mark = 'X';
+        } else if (actor instanceof Badguy) {
+            mark = 'O';
+        }
+        if (actor.previousPos != undefined) {
+            $('#cell_' + actor.previousPos.y + '_' + actor.previousPos.x).html('');
+        }
+        $('#cell_' + actor.pos.y + '_' + actor.pos.x).html(mark);
+    }
 }
 
 
 function Player(board) {
     this.pos = new Position(5, 19);
+    this.previousPos;
     this.type = 'goodguy';
     this.start = function () {
-        $('#cell_' + this.pos.y + '_' + this.pos.x).html('X');
+        board.renderActor(this);
     };
+    
     this.move = function (dir) {
-        
         //remove player
-        $('#cell_' + this.pos.y + '_' + this.pos.x).html('');
+        this.previousPos = new Position(this.pos.x, this.pos.y);
         
         if(dir === 'up'){
             this.pos.up();
@@ -127,7 +139,7 @@ function Player(board) {
         }
         
         // Draw player
-        $('#cell_' + this.pos.y + '_' + this.pos.x).html('X');
+        board.renderActor(this);
         board.checkCollision();
         
     };
@@ -138,6 +150,7 @@ function Player(board) {
 function Badguy(board, x, y, dir, speed) {
     var _this = this;
     this.pos = new Position(x,y);
+    this.previousPos;
     this.type = 'badguy';
     this.speed = speed;
     this.dir = dir;
@@ -149,9 +162,7 @@ function Badguy(board, x, y, dir, speed) {
 
     };
     this.move = function () {
-    
-        var currentSquare = $('#cell_' + this.pos.y + '_' + this.pos.x).html();
-        $('#cell_' + this.pos.y + '_' + this.pos.x).html(currentSquare.replace('O',''));
+        this.previousPos = new Position(this.pos.x, this.pos.y);
         
         if(this.dir === 'right') {
             if (this.pos.x >= config.boardSize.x - 1) {
@@ -166,11 +177,8 @@ function Badguy(board, x, y, dir, speed) {
                 this.pos.left();
             }
         }
-        
-        
-        
-        $('#cell_' + this.pos.y + '_' + this.pos.x).append('O');
-        
+
+        board.renderActor(this);
         board.checkCollision();
         
         this.walk();
