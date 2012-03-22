@@ -19,6 +19,10 @@ tr {
     background-color:red;
 }
 
+.wall {
+    background-color:black;
+}
+
 th {
     border: 1px solid black;
 }

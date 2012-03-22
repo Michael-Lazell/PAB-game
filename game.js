@@ -65,11 +65,9 @@ function Board() {
     this.actors = [];
     this.drawBoard = function () {
         $('#game').html(this.drawTable());
-        console.log(config.walls);
         for(var i in config.walls) {
-            console.log(config.walls[i].width);
             for(var j = 0; j <= config.walls[i].width; j++){
-                $('#cell_' + config.walls[i].y + '_' + (config.walls[i].x + j) ).html('[]');
+                $('#cell_' + config.walls[i].y + '_' + (config.walls[i].x + j) ).addClass('wall');
             }
         }
     };
@@ -112,11 +110,16 @@ function Board() {
         } else if (actor instanceof Badguy) {
             mark = 'badguy';
         }
-        
-        if (actor.previousPos != undefined) {
-            $('#cell_' + actor.previousPos.y + '_' + actor.previousPos.x).removeClass(mark);
+        if($('#cell_' + actor.pos.y + '_' + actor.pos.x).hasClass('wall')) {
+            actor.pos.x = actor.previousPos.x;
+            actor.pos.y = actor.previousPos.y;
+        } else {
+            if (actor.previousPos != undefined) {
+                $('#cell_' + actor.previousPos.y + '_' + actor.previousPos.x).removeClass(mark);
+            }
+            $('#cell_' + actor.pos.y + '_' + actor.pos.x).addClass(mark);
         }
-        $('#cell_' + actor.pos.y + '_' + actor.pos.x).addClass(mark);
+        
     }
 }
 
@@ -204,9 +207,9 @@ function init() {
     
     var board = new Board();
     var me = new Player(board);
-    var tsi = new Badguy(board, 0, 1, 'right', 50);
-    var mer = new Badguy(board, 0, 3, 'left', 200);
-    var tlo = new Badguy(board, 5, 5, 'right', 500);
+    var tsi = new Badguy(board, 0, 10, 'right', 50);
+    var mer = new Badguy(board, 0, 11, 'left', 200);
+    var tlo = new Badguy(board, 5, 12, 'right', 500);
     
     bindKeypress(me);
     
