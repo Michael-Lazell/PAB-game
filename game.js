@@ -10,6 +10,8 @@ var config = {
 var approved = 0;
 var rejected = 0;
 
+//CHENGE
+
 function Position(x, y) {
     this.x = x;
     this.y = y;
