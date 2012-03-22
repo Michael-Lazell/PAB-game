@@ -5,6 +5,8 @@ var config = {
     }
 };
 
+// Test comment
+
 var approved = 0;
 var rejected = 0;
 
