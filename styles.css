@@ -1,0 +1,12 @@
+td {
+    border: 1px solid black;
+    height: 32px;
+    text-align: center;
+    width: 32px;
+}
+table {
+    border-collapse: collapse;
+}
+tr {
+    
+}
