@@ -67,11 +67,8 @@ function Board() {
             console.log(config.walls[i].width);
             for(var j = 0; j <= config.walls[i].width; j++){
                 $('#cell_' + config.walls[i].y + '_' + (config.walls[i].x + j) ).html('[]');
-                //console.log('#cell_' + i.y + '_' + (i.x + j) );
             }
-            
         }
-        
     };
     
     this.drawTable = function () {
@@ -137,13 +134,6 @@ function Player(board) {
     
 }
 
-/*function Wall(board, x, y, width) {
-    this.pos = new Pos(x,y);
-    this.width = width;
-    
-    
-}*/
-
 
 function Badguy(board, x, y, dir, speed) {
     var _this = this;
@@ -192,9 +182,6 @@ function Badguy(board, x, y, dir, speed) {
 }
 
 
-
-//var actors = [];
-
 $(function() {
     alert('You are now an Enonic consultant. \nYour mission is to get a feature request past the Product Advisory Board. \nGood luck!');
     init();
@@ -207,9 +194,6 @@ function init() {
     var tsi = new Badguy(board, 0, 1, 'right', 50);
     var mer = new Badguy(board, 0, 3, 'left', 200);
     var tlo = new Badguy(board, 5, 5, 'right', 500);
-    
-    /*var walls = [];
-    walls.push(new Wall(board, 2, 15, 3));*/
     
     bindKeypress(me);
     
