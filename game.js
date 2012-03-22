@@ -121,11 +121,11 @@ function Player(board) {
     
 }
 
-function Badguy(board, x, y, dir) {
+function Badguy(board, x, y, dir, speed) {
     var _this = this;
     this.pos = new Position(x,y);
     this.type = 'badguy';
-    this.speed = 1000;
+    this.speed = speed;
     this.dir = dir;
     
     this.walk = function (){
@@ -163,6 +163,8 @@ function Badguy(board, x, y, dir) {
         
     };
     
+    this.walk();
+    
 }
 
 
@@ -177,9 +179,9 @@ function init() {
     
     var board = new Board();
     var me = new Player(board);
-    var tsi = new Badguy(board, 0, 1, 'right');
-    var mer = new Badguy(board, 0, 3, 'left');
-    var tlo = new Badguy(board, 5, 5, 'left');
+    var tsi = new Badguy(board, 0, 1, 'right', 500);
+    var mer = new Badguy(board, 0, 3, 'left', 50);
+    var tlo = new Badguy(board, 5, 5, 'left', 100);
     bindKeypress(me);
     
     board.actors[0] = me;
@@ -190,17 +192,7 @@ function init() {
     $('#game').html('');
     board.drawBoard();
     
-    me.start();
-    
-    tlo.walk();
-    tlo.speed = Math.random() * 500;
-    
-    tsi.walk();
-    tsi.speed = 50;
-    
-    mer.walk();
-    mer.speed = Math.random() * 100;
-    
+    me.start();    
 }
 
 function restart(actors) {
