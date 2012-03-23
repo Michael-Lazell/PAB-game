@@ -10,16 +10,18 @@ var config = {
                 y: 19
             },
             walls: [
-                {x: 0, y: 17, width: 8},
-                {x: 5, y: 15, width: 5},
-                {x: 2, y: 5, width: 5}
+                {x: 2, y: 5, width: 4},
+                {x: 1, y: 14, width: 5},
+                {x: 6, y: 15, width: 3},
+                {x: 0, y: 17, width: 8}
             ],
             badguy: [
-                {x: 0, y: 12, dir: 'right', speed: 50, name:'tsi'},
-                {x: 0, y: 13, dir: 'left', speed: 200, name:'mer'},
-                {x: 5, y: 14, dir: 'right', speed: 500, name:'tlo'},
-                {x: 0, y: 16, dir: 'right', speed: 500, name:'lol'},
-                {x: 0, y: 5, dir: 'right', speed: 200, name:'jsi'}
+                {x: 0, y: 5, dir: 'right', speed: 200, name:'jsi'},
+                {x: 0, y: 11, dir: 'right', speed: 50, name:'tsi'},
+                {x: 0, y: 12, dir: 'left', speed: 200, name:'mer'},
+                {x: 5, y: 13, dir: 'right', speed: 500, name:'tlo'},
+                {x: 0, y: 15, dir: 'right', speed: 500, name:'lol2'},
+                {x: 0, y: 16, dir: 'right', speed: 500, name:'lol'}                
             ]
         }
     ]
