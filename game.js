@@ -8,8 +8,8 @@ var config = {
         y: 19
     },
     walls: [
-        {x: 2, y: 17, width: 2},
-        {x: 2, y: 15, width: 3}
+        {x: 0, y: 17, width: 8},
+        {x: 5, y: 15, width: 5}
     ]
 };
 
@@ -104,20 +104,14 @@ function Board() {
     };
     
     this.renderActor = function(actor) {
-        var mark;
-        if (actor instanceof Player) {
-            mark = 'player';
-        } else if (actor instanceof Badguy) {
-            mark = 'badguy';
-        }
         if($('#cell_' + actor.pos.y + '_' + actor.pos.x).hasClass('wall')) {
             actor.pos.x = actor.previousPos.x;
             actor.pos.y = actor.previousPos.y;
         } else {
             if (actor.previousPos != undefined) {
-                $('#cell_' + actor.previousPos.y + '_' + actor.previousPos.x).removeClass(mark);
+                $('#cell_' + actor.previousPos.y + '_' + actor.previousPos.x).removeClass(actor.mark);
             }
-            $('#cell_' + actor.pos.y + '_' + actor.pos.x).addClass(mark);
+            $('#cell_' + actor.pos.y + '_' + actor.pos.x).addClass(actor.mark);
         }
         
     }
@@ -127,7 +121,7 @@ function Board() {
 function Player(board) {
     this.pos = new Position(config.playerStart.x, config.playerStart.y);
     this.previousPos;
-    this.type = 'goodguy';
+    this.mark = 'player';
     this.start = function () {
         board.renderActor(this);
     };
@@ -155,11 +149,11 @@ function Player(board) {
 }
 
 
-function Badguy(board, x, y, dir, speed) {
+function Badguy(board, x, y, dir, speed, name) {
     var _this = this;
     this.pos = new Position(x,y);
     this.previousPos;
-    this.type = 'badguy';
+    this.mark = 'badguy ' + name;
     this.speed = speed;
     this.dir = dir;
     
@@ -199,7 +193,7 @@ function Badguy(board, x, y, dir, speed) {
 
 
 $(function() {
-    alert('You are now an Enonic consultant. \nYour mission is to get a feature request past the Product Advisory Board. \nGood luck!');
+    /*alert('You are now an Enonic consultant. \nYour mission is to get a feature request past the Product Advisory Board. \nGood luck!');*/
     init();
 });
 
@@ -207,21 +201,19 @@ function init() {
     
     var board = new Board();
     var me = new Player(board);
-    var tsi = new Badguy(board, 0, 10, 'right', 50);
-    var mer = new Badguy(board, 0, 11, 'left', 200);
-    var tlo = new Badguy(board, 5, 12, 'right', 500);
     
     bindKeypress(me);
-    
     board.actors[0] = me;
-    board.actors.push(tlo);
-    board.actors.push(tsi);
-    board.actors.push(mer);
-    
-    $('#game').html('');
+    board.actors.push(new Badguy(board, 0, 12, 'right', 50, 'tsi'));
+    board.actors.push(new Badguy(board, 0, 13, 'left', 200, 'mer'));
+    board.actors.push(new Badguy(board, 5, 14, 'right', 500, 'tlo'));
+    board.actors.push(new Badguy(board, 0, 16, 'right', 500, 'lol'));
+
     board.drawBoard();
     
-    me.start();    
+    me.start();
+    
+    $('#game').fadeIn('slow');
 }
 
 function restart(board) {
