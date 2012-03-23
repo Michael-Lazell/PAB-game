@@ -105,8 +105,7 @@ function Board() {
     
     this.renderActor = function(actor) {
         if($('#cell_' + actor.pos.y + '_' + actor.pos.x).hasClass('wall')) {
-            actor.pos.x = actor.previousPos.x;
-            actor.pos.y = actor.previousPos.y;
+            actor.hitWall();
         } else {
             if (actor.previousPos != undefined) {
                 $('#cell_' + actor.previousPos.y + '_' + actor.previousPos.x).removeClass(actor.mark);
@@ -145,6 +144,10 @@ function Player(board) {
         board.checkCollision();
         
     };
+    this.hitWall = function() {
+        this.pos.x = this.previousPos.x;
+        this.pos.y = this.previousPos.y;
+    }
     
 }
 
@@ -186,6 +189,10 @@ function Badguy(board, x, y, dir, speed, name) {
         this.walk();
         
     };
+    
+    this.hitWall = function() {
+        // TODO: If badguy hits wall, he should start walking in the oposite direction
+    }
     
     this.walk();
     
