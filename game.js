@@ -215,6 +215,7 @@ function init() {
     board.actors.push(new Badguy(board, 0, 13, 'left', 200, 'mer'));
     board.actors.push(new Badguy(board, 5, 14, 'right', 500, 'tlo'));
     board.actors.push(new Badguy(board, 0, 16, 'right', 500, 'lol'));
+    board.actors.push(new Badguy(board, 0, 5, 'right', 200, 'jsi'));
 
     board.drawBoard();
     
