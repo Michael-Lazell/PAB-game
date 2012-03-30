@@ -10,39 +10,46 @@ var config = {
                 y: 9
             },
             walls: [
-                {x: 0, y: 8, width: 4}
+                {x: 0, y: 8, width: 4},
+                {x: 1, y: 3, width: 3},
+                {x: 4, y: 2, width: 1}
             ],
             badguys: [
-                {x: 0, y: 1, dir: 'right', speed: 1500, name:'tsi'},
-                {x: 0, y: 7, dir: 'left', speed: 2000, name:'mer'}
+                {x: 0, y: 1, dir: 'right', speed: 200, name:'tsi'},
+                {x: 0, y: 7, dir: 'left', speed: 700, name:'mer'},
+                {x: 4, y: 6, dir: 'right', speed: 500, name:'tlo'},
+                {x: 4, y: 5, dir: 'right', speed: 400, name:'srs'},
+                {x: 4, y: 4, dir: 'left', speed: 400, name:'ljl'}
+                
             ]
             
         },
-        {
+        /*{
             boardSize: {
                 x: 9,
-                y: 19
+                y: 14
             },
             playerStart: {
                 x: 5,
-                y: 18
+                y: 13
             },
             walls: [
                 {x: 2, y: 5, width: 4},
-                {x: 0, y: 12, width: 6},
-                {x: 1, y: 14, width: 5},
-                {x: 6, y: 15, width: 3},
-                {x: 0, y: 17, width: 8}
+                {x: 0, y: 7, width: 6},
+                {x: 7, y: 9, width: 2},
+                {x: 1, y: 9, width: 5},
+                {x: 6, y: 10, width: 3},
+                {x: 0, y: 12, width: 8}
             ],
             badguys: [
                 {x: 0, y: 5, dir: 'right', speed: 200, name:'jsi'},
                 {x: 0, y: 1, dir: 'right', speed: 50, name:'tsi'},
-                {x: 0, y: 12, dir: 'left', speed: 200, name:'mer'},
-                {x: 5, y: 13, dir: 'right', speed: 500, name:'tlo'},
-                {x: 0, y: 15, dir: 'right', speed: 500, name:'lol2'},
-                {x: 0, y: 16, dir: 'right', speed: 500, name:'lol'}                
+                {x: 0, y: 7, dir: 'left', speed: 200, name:'mer'},
+                {x: 5, y: 8, dir: 'right', speed: 500, name:'tlo'},
+                {x: 0, y: 10, dir: 'right', speed: 500, name:'lol2'},
+                {x: 0, y: 11, dir: 'right', speed: 500, name:'lol'}                
             ]
-        }
+        }*/
     ]
 };
 
@@ -120,7 +127,7 @@ function Board() {
         for(y = 0; y < getLevel().boardSize.y; y++) {
             string += '<tr id="row_' + y + '">';
                 for(x = 0; x < getLevel().boardSize.x; x++) {
-                    string += '<td id="cell_' + y + '_' + x + '">' + x + 'x' + y + '</td>';
+                    string += '<td id="cell_' + y + '_' + x + '">' + x + 'x' + y +'</td>';
                 }
             string += '</tr>';
         }
@@ -169,7 +176,6 @@ function Player(board) {
     };
     
     this.move = function (dir) {
-        //remove player
         this.previousPos = new Position(this.pos.x, this.pos.y);
         
         if(dir === 'up'){
@@ -182,13 +188,13 @@ function Player(board) {
             this.pos.right();
         }
         
-        // Draw player
         board.renderActor(this);
         
     };
     this.hitWall = function() {
         this.resetPos();
     }
+    
     this.hitPlayer = function() {
     }
     
@@ -196,6 +202,7 @@ function Player(board) {
         this.resetPos();    
         reject(board);
     }
+    
     this.resetPos = function() {
         this.pos.x = this.previousPos.x;
         this.pos.y = this.previousPos.y;
@@ -262,6 +269,7 @@ function Badguy(board, x, y, dir, speed, name) {
     }
     
     this.hitBadguy = function() {
+        
     }
     
     this.getOpositeDirection = function() {
@@ -293,8 +301,6 @@ $(function() {
 });
 
 function init() {
-    console.log(getLevel());
-    console.log(level);
     var board = new Board();
     me = new Player(board);
     
@@ -328,8 +334,9 @@ function reject(board) {
 function nextLevel() {
     alert('NEXT LEVEL');
     $('#game').html('');
-    
-    ++level;
+    if (++level === getLevels().length) {
+        alert('We have a winner!');
+    }
     init();
 }
 
