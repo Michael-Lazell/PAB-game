@@ -24,7 +24,7 @@ var config = {
             ]
             
         },
-        /*{
+        {
             boardSize: {
                 x: 9,
                 y: 14
@@ -49,7 +49,7 @@ var config = {
                 {x: 0, y: 10, dir: 'right', speed: 500, name:'lol2'},
                 {x: 0, y: 11, dir: 'right', speed: 500, name:'lol'}                
             ]
-        }*/
+        }
     ]
 };
 
