@@ -1,14 +1,18 @@
+body {
+    font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
 td {
-    border: 1px solid black;
-    height: 32px;
+    border: 1px solid #ddd;
+    height: 48px;
     text-align: center;
-    width: 32px;
+    width: 48px;
 }
 table {
     border-collapse: collapse;
 }
 tr {
-    
+ font-size:10px;   
 }
 
 .player {
@@ -17,6 +21,7 @@ tr {
 
 .badguy {
     background-color:red;
+    background-size:50px;
 }
 
 .wall {
@@ -24,13 +29,32 @@ tr {
 }
 
 .badguy.mer {
-    background-color:aqua;
+    background-image:url(img/mer.gif);
+}
+
+.badguy.tsi {
+    background-image:url(img/tsi.gif);
+    
+}
+
+.badguy.tlo {
+    background-image:url(img/tlo.gif);
+    
 }
 
 th {
-    border: 1px solid black;
+    border: 1px solid #ddd;
 }
 
 #game {
-    display:none;
+    /*display:none;*/
+}
+
+.scoreboard {
+    position:absolute;
+    background-color:grey;
+    border-radius:5px;
+    top:50px;
+    left:550px;
+    padding:10px;
 }

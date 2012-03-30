@@ -2,22 +2,41 @@ var config = {
     levels: [
         {
             boardSize: {
-                x: 10,
-                y: 20
+                x: 5,
+                y: 10
+            },
+            playerStart: {
+                x: 2,
+                y: 9
+            },
+            walls: [
+                {x: 0, y: 8, width: 4}
+            ],
+            badguys: [
+                {x: 0, y: 1, dir: 'right', speed: 1500, name:'tsi'},
+                {x: 0, y: 7, dir: 'left', speed: 2000, name:'mer'}
+            ]
+            
+        },
+        {
+            boardSize: {
+                x: 9,
+                y: 19
             },
             playerStart: {
                 x: 5,
-                y: 19
+                y: 18
             },
             walls: [
                 {x: 2, y: 5, width: 4},
+                {x: 0, y: 12, width: 6},
                 {x: 1, y: 14, width: 5},
                 {x: 6, y: 15, width: 3},
                 {x: 0, y: 17, width: 8}
             ],
-            badguy: [
+            badguys: [
                 {x: 0, y: 5, dir: 'right', speed: 200, name:'jsi'},
-                {x: 0, y: 11, dir: 'right', speed: 50, name:'tsi'},
+                {x: 0, y: 1, dir: 'right', speed: 50, name:'tsi'},
                 {x: 0, y: 12, dir: 'left', speed: 200, name:'mer'},
                 {x: 5, y: 13, dir: 'right', speed: 500, name:'tlo'},
                 {x: 0, y: 15, dir: 'right', speed: 500, name:'lol2'},
@@ -30,13 +49,14 @@ var config = {
 var approved = 0;
 var rejected = 0;
 var level = 0;
+var me;
 
 function getLevel() {
     return config.levels[level];
 }
 
-function testFunc() {
-    return 'hi';
+function getLevels() {
+    return config.levels;
 }
 
 function Position(x, y) {
@@ -88,7 +108,7 @@ function Board() {
     this.drawBoard = function () {
         $('#game').html(this.drawTable());
         for(var i in getLevel().walls) {
-            for(var j = 0; j <= getLevel().walls[i].width; j++){
+            for(var j = 0; j < getLevel().walls[i].width; j++){
                 $('#cell_' + getLevel().walls[i].y + '_' + (getLevel().walls[i].x + j) ).addClass('wall');
             }
         }
@@ -100,7 +120,7 @@ function Board() {
         for(y = 0; y < getLevel().boardSize.y; y++) {
             string += '<tr id="row_' + y + '">';
                 for(x = 0; x < getLevel().boardSize.x; x++) {
-                    string += '<td id="cell_' + y + '_' + x + '"></td>';
+                    string += '<td id="cell_' + y + '_' + x + '">' + x + 'x' + y + '</td>';
                 }
             string += '</tr>';
         }
@@ -108,33 +128,34 @@ function Board() {
         return string;
     };
     
-    this.checkCollision = function () {
-        for(var i in this.actors){
-            if(this.actors[i] instanceof Badguy) {
-                if(this.actors[i].pos.equals(this.actors[0].pos)) {
-                    alert('REJECTED!');
-                    $('#rejected').html(++rejected);
-                    restart(this);
-                }
-            }
-        }
-        if(this.actors[0].pos.y === 0){
-            alert('Congratulations! Your feature will be added in "5.X"');
-            $('#approved').html(++approved);
-            restart(this);
-        }
-    };
-    
     this.renderActor = function(actor) {
-        if($('#cell_' + actor.pos.y + '_' + actor.pos.x).hasClass('wall')) {
+        var cell = $('#cell_' + actor.pos.y + '_' + actor.pos.x);
+        if(cell.hasClass('wall')) {
             actor.hitWall();
+        } else if(cell.hasClass('badguy')) {
+            actor.hitBadguy();
+        } else if(cell.hasClass('player')) {
+            actor.hitPlayer();
+        } else if (actor instanceof Player && actor.pos.y == 0) {
+            this.stopBadGuys();
+            nextLevel();
+            
         } else {
             if (actor.previousPos != undefined) {
+                //console.log(actor.mark + ' removing class from previous pos :' + actor.previousPos.x + 'x' +actor.previousPos.y + ' - to: ' + actor.pos.x + 'x' + actor.pos.y);
                 $('#cell_' + actor.previousPos.y + '_' + actor.previousPos.x).removeClass(actor.mark);
             }
             $('#cell_' + actor.pos.y + '_' + actor.pos.x).addClass(actor.mark);
         }
         
+    }
+    
+    this.stopBadGuys = function() {
+        for(var i in this.actors) {
+            if (this.actors[i] instanceof Badguy) {
+                this.actors[i].stop();
+            }
+        }
     }
 }
 
@@ -163,10 +184,19 @@ function Player(board) {
         
         // Draw player
         board.renderActor(this);
-        board.checkCollision();
         
     };
     this.hitWall = function() {
+        this.resetPos();
+    }
+    this.hitPlayer = function() {
+    }
+    
+    this.hitBadguy = function() {
+        this.resetPos();    
+        reject(board);
+    }
+    this.resetPos = function() {
         this.pos.x = this.previousPos.x;
         this.pos.y = this.previousPos.y;
     }
@@ -181,13 +211,16 @@ function Badguy(board, x, y, dir, speed, name) {
     this.mark = 'badguy ' + name;
     this.speed = speed;
     this.dir = dir;
+    this.stop = false;
     
     this.walk = function (){
-        setTimeout(function(){
-            _this.move();
-        }, this.speed);
-
+        if (this.stop !== true) {
+            setTimeout(function(){
+                _this.move();
+            }, this.speed);
+        }
     };
+    
     this.move = function () {
         this.previousPos = new Position(this.pos.x, this.pos.y);
         
@@ -205,18 +238,31 @@ function Badguy(board, x, y, dir, speed, name) {
             }
         }
 
-        board.renderActor(this);
-        board.checkCollision();
+        this.render();
         
         this.walk();
         
     };
     
+    this.stop = function() {
+        this.stop = true;
+    }
+    
+    this.start = function() {
+        this.stop = false();
+    }
+    
     this.hitWall = function() {
         this.dir = this.getOpositeDirection();
     }
     
-    this.walk();
+    this.hitPlayer = function() {
+        this.resetPos();
+        reject(board);
+    }
+    
+    this.hitBadguy = function() {
+    }
     
     this.getOpositeDirection = function() {
         if (this.dir === 'right') {
@@ -225,22 +271,37 @@ function Badguy(board, x, y, dir, speed, name) {
         return 'right';
     }
     
+    this.resetPos = function() {
+        this.pos.x = this.previousPos.x;
+        this.pos.y = this.previousPos.y;
+    }
+    
+    this.render = function() {
+        if (this.stop !== true) {
+            board.renderActor(this);
+        }
+    }
+    
+    this.walk();
 }
 
 
 $(function() {
     /*alert('You are now an Enonic consultant. \nYour mission is to get a feature request past the Product Advisory Board. \nGood luck!');*/   
     init();
+    bindKeypress();
 });
 
 function init() {
+    console.log(getLevel());
+    console.log(level);
     var board = new Board();
-    var me = new Player(board);
+    me = new Player(board);
     
-    bindKeypress(me);
+    
     board.actors[0] = me;
     
-    var badguys = getLevel().badguy;
+    var badguys = getLevel().badguys;
     for (var i in badguys) {
         board.actors.push(
             new Badguy(board, 
@@ -258,17 +319,28 @@ function init() {
     $('#game').fadeIn('slow');
 }
 
+function reject(board) {
+    alert('REJECTED!');
+    $('#rejected').html(++rejected);
+    restart(board);
+}
+
+function nextLevel() {
+    alert('NEXT LEVEL');
+    $('#game').html('');
+    
+    ++level;
+    init();
+}
+
 function restart(board) {
     var player = board.actors[0];
     player.previousPos = new Position(player.pos.x, player.pos.y)
     player.pos.setPosition(getLevel().playerStart.x, getLevel().playerStart.y);
-    board.renderActor(board.actors[0]);
+    board.renderActor(player);
 }
 
-
-
-
-function bindKeypress(me) {
+function bindKeypress() {
     $(document).keyup(function(e) {
 		switch(e.which) {
 
